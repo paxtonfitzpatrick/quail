@@ -39,15 +39,18 @@ def load(filepath, update=True):
 
     """
 
+    """ see load_example_data() docstring below for info on example eggs"""
     if filepath == 'automatic' or filepath == 'example':
         fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-automatic.egg'
-        return load_egg(fpath, update=False)
+        return load_egg(fpath)
     elif filepath == 'manual':
         fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-manual.egg'
-        return load_egg(fpath, update=False)
+        return load_egg(fpath)
     elif filepath == 'naturalistic':
         fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/heusmann18.egg'
         return load_egg(fpath)
+
+
     elif filepath.split('.')[-1]=='egg':
         return load_egg(filepath, update=update)
     elif filepath.split('.')[-1]=='fegg':
