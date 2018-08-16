@@ -39,13 +39,13 @@ def load(filepath, update=True):
     """
 
     if filepath == 'automatic' or filepath == 'example':
-        fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/automatic.egg'
+        fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-automatic.egg'
         return load_egg(fpath)
     elif filepath == 'manual':
-        fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/manual.egg'
+        fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-manual.egg'
         return load_egg(fpath, update=False)
     elif filepath == 'naturalistic':
-        fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/naturalistic.egg'
+        fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/heusmann18.egg'
     elif filepath.split('.')[-1]=='egg':
         return load_egg(filepath, update=update)
     elif filepath.split('.')[-1]=='fegg':
@@ -549,14 +549,14 @@ def load_example_data(dataset='automatic'):
 
     if dataset == 'naturalistic':
         # open naturalistic egg
-        egg = Egg(**dd.io.load(os.path.dirname(os.path.abspath(__file__)) + '/data/' + dataset + '.egg'))
+        egg = Egg(**dd.io.load(os.path.dirname(os.path.abspath(__file__)) + '/data/heusmann18.egg'))
     else:
     # open pickled egg
         try:
-            with open(os.path.dirname(os.path.abspath(__file__)) + '/data/' + dataset + '.egg', 'rb') as handle:
+            with open(os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-' + dataset + '.egg', 'rb') as handle:
                 egg = pickle.load(handle)
         except:
-            f = dd.io.load(os.path.dirname(os.path.abspath(__file__)) + '/data/' + dataset + '.egg')
+            f = dd.io.load(os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-' + dataset + '.egg')
             egg = Egg(pres=f['pres'], rec=f['rec'], dist_funcs=f['dist_funcs'],
                       subjgroup=f['subjgroup'], subjname=f['subjname'],
                       listgroup=f['listgroup'], listname=f['listname'],
