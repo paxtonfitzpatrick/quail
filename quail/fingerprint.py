@@ -43,18 +43,15 @@ class Fingerprint(object):
 
     permute : bool
         A boolean flag specifying whether to use permutations to compute the
-        fingerprint (default: True)
+        fingerprint (default: False)
 
+    nperms : int
+        Number of permutations to use. Only used if method='permute'. (default:
+        2500)
 
-    dist_funcs : dict (optional)
-        A dictionary of custom distance functions for stimulus features.  Each
-        key should be the name of a feature
-        and each value should be an inline distance function
-        (e.g. `dist_funcs['feature_n'] = lambda a, b: abs(a-b)`)
-
-    meta : dict (optional)
-        Meta data about the study (i.e. version, description, date, etc.) can be
-        saved here.
+    parallel : bool
+        Option to use multiprocessing (this can help speed up the permutations
+        tests in the clustering calculations)
     """
 
     def __init__(self, init=None, features='all', state=None, n=0,
@@ -123,6 +120,7 @@ class Fingerprint(object):
     def get_features(self):
         return self.features
 
+
 class OptimalPresenter(object):
     """
     A class that reorders stimuli to optimize memory performance
@@ -130,7 +128,7 @@ class OptimalPresenter(object):
     A memory fingerprint can be defined as a subject's tendency to cluster their
     recall responses with respect to more than one stimulus feature dimensions.
     What is a 'stimulus feature dimension' you ask? It is simply an attribute of
-    the stimulus, such as its color, category, spatial location etc.
+    the stimulus, such as its color, category, spatial location, etc.
 
     Parameters
     ----------
@@ -138,35 +136,20 @@ class OptimalPresenter(object):
     init : quail.Egg
         Data to initialize the fingerprint instance
 
+    strategy : str or None
+        The strategy to use to reorder the list.  This can be 'stabilize',
+        'destabilize', 'random' or None.  If None, the self.strategy field
+        will be used. (default: 'random')
+
     features : list
-        Features to consider for fingerprint analyses, defaults to all.
+        Features to consider for reordering, defaults to None.
 
-    state : np.array
-        The current fingerprint (an array of real numbers between 0 and 1,
-        inclusive) initialized to all 0.5
-
-    n : int
-        a counter specifying how many lists went into estimating the current
-        fingerprint (initialize to 0)
-
-    permute : bool
-        A boolean flag specifying whether to use permutations to compute the
-        fingerprint (default: True)
-
-
-    dist_funcs : dict (optional)
-        A dictionary of custom distance functions for stimulus features.  Each
-        key should be the name of a feature
-        and each value should be an inline distance function
-        (e.g. `dist_funcs['feature_n'] = lambda a, b: abs(a-b)`)
-
-    meta : dict (optional)
-        Meta data about the study (i.e. version, description, date, etc.) can be
-        saved here.
+    params : dict
+        'alpha' and 'tau' are used to compute the weight to place on stimulus
+        feature dimension in reordering the list based on the given 'fingerprint'.
     """
 
-    def __init__(self, strategy='random', features=None, params=None,
-                 fingerprint=None):
+    def __init__(self, strategy='random', features=None, params=None):
 
         # set default params
         self.params = {
@@ -189,7 +172,7 @@ class OptimalPresenter(object):
 
     def get_params(self, name):
         """
-        Sets a parameter to a particular value
+        Return the value of a particular parameter
         """
         return self.params[name]
 
@@ -227,7 +210,7 @@ class OptimalPresenter(object):
             fingerprint.  Can be any distance function supported by
             scipy.spatial.distance.cdist. For more info, see:
             https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.cdist.html
-            (default: euclidean)
+            (default: correlation)
 
         fingerprint : quail.Fingerprint or np.array
             Fingerprint (or just the state of a fingerprint) to reorder by. If
@@ -521,12 +504,7 @@ def order_choice(presenter, egg, dist_dict, fingerprint):
                 dist_dict)
             idx+=1
 
-        # print(weights)
-        # print(cdist(np.array(fingerprint, ndmin=2), weights, 'euclidean'))
 
-        # pick the closest (or farthest)
-        # if strategy is 'stabilize':
-        # pick = np.argmin(cdist(np.array(fingerprint, ndmin=2), weights, 'euclidean'))
         stick = []
         dist = cdist(np.array(fingerprint, ndmin=2), weights, 'correlation').reshape(len(words_left), 1)
         for idx, val in enumerate(dist):
@@ -711,13 +689,10 @@ def compute_feature_weights_dict(pres_list, rec_list, feature_list, dist_dict):
             # for each feature
             for feature in feature_list[0]:
 
-                # get the distance vector for the current word
-                # dists = [dist_dict[c][j][feature] for j in dist_dict[c]]
                 # distance between current and next word
                 c_dist = dist_dict[c][n][feature]
 
                 # filter dists removing the words that have already been recalled
-                # dists_filt = np.array([dist for idx, dist in enumerate(dists) if idx not in past_idxs])
                 dists_filt = [dist_dict[c][j][feature] for j in dist_dict[c] if j not in past_words]
 
                 # get indices

@@ -92,6 +92,10 @@ def analyze(egg, subjgroup=None, listgroup=None, subjname='Subject',
         Applies only to 'best' and 'smooth' matching approaches.  Can be any
         distance function supported by numpy.spatial.distance.cdist.
 
+    features : str or lists
+        What features to consider in computing distance. Defaults to all features
+        if the egg to be analyzed has features, otherwise None.
+
 
     Returns
     ----------
