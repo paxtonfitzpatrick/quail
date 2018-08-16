@@ -13,6 +13,7 @@ import numpy as np
 import deepdish as dd
 from .egg import Egg, FriedEgg
 from .helpers import parse_egg, stack_eggs
+import traceback
 
 try:
     from sqlalchemy import create_engine, MetaData, Table
@@ -40,12 +41,13 @@ def load(filepath, update=True):
 
     if filepath == 'automatic' or filepath == 'example':
         fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-automatic.egg'
-        return load_egg(fpath)
+        return load_egg(fpath, update=False)
     elif filepath == 'manual':
         fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/zimaetal18-manual.egg'
         return load_egg(fpath, update=False)
     elif filepath == 'naturalistic':
         fpath = os.path.dirname(os.path.abspath(__file__)) + '/data/heusmann18.egg'
+        return load_egg(fpath)
     elif filepath.split('.')[-1]=='egg':
         return load_egg(filepath, update=update)
     elif filepath.split('.')[-1]=='fegg':

@@ -31,7 +31,7 @@ analyses = {
 def analyze(egg, subjgroup=None, listgroup=None, subjname='Subject',
             listname='List', analysis=None, position=0, permute=False,
             n_perms=1000, parallel=False, match='exact',
-            distance='euclidean', features=None, ts=None):
+            distance=None, features=None, ts=None):
     """
     General analysis function that groups data by subject/list number and performs analysis.
 
@@ -87,10 +87,11 @@ def analyze(egg, subjgroup=None, listgroup=None, subjname='Subject',
         weights are derived from the similarity between the recalled item and
         each presented item.
 
-    distance : str
-        The distance function used to compare presented and recalled items.
+    distance : str or dict
+        The distance function(s) used to compare presented and recalled items.
         Applies only to 'best' and 'smooth' matching approaches.  Can be any
-        distance function supported by numpy.spatial.distance.cdist.
+        distance function supported by numpy.spatial.distance.cdist.  Defaults to
+        dist_funcs dictionary of Egg object.
 
     features : str or lists
         What features to consider in computing distance. Defaults to all features
@@ -130,6 +131,9 @@ def analyze(egg, subjgroup=None, listgroup=None, subjname='Subject',
 
     if features is None:
         features = egg.feature_names
+
+    if distance is None:
+        distance = egg.dist_funcs
 
     opts = {
         'subjgroup' : subjgroup,
