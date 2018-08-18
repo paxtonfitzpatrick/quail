@@ -2,7 +2,7 @@ from __future__ import division
 import numpy as np
 from .recmat import recall_matrix
 
-def accuracy_helper(egg, match='exact', distance='euclidean',
+def accuracy_helper(egg, match='exact', distance=None,
                     features=None):
     """
     Computes proportion of words recalled

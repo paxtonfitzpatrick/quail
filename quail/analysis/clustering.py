@@ -7,7 +7,7 @@ from ..distance import dist_funcs as distdict
 from ..helpers import shuffle_egg
 
 def fingerprint_helper(egg, permute=False, n_perms=1000,
-                       match='exact', distance='euclidean', features=None):
+                       match='exact', distance=None, features=None):
     """
     Computes clustering along a set of feature dimensions
 

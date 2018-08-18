@@ -2,7 +2,7 @@ import numpy as np
 from .recmat import recall_matrix
 
 def pnr_helper(egg, position, match='exact',
-               distance='euclidean', features=None):
+               distance=None, features=None):
 
     """
     Computes probability of a word being recalled nth (in the appropriate recall

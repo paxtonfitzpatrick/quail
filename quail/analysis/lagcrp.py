@@ -4,7 +4,7 @@ from .recmat import recall_matrix
 from scipy.spatial.distance import cdist
 from ..helpers import check_nan
 
-def lagcrp_helper(egg, match='exact', distance='euclidean',
+def lagcrp_helper(egg, match='exact', distance=None,
                   ts=None, features=None):
     """
     Computes probabilities for each transition distance (probability that a word

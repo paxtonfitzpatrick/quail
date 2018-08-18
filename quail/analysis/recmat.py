@@ -3,8 +3,9 @@ import pandas as pd
 import six
 from scipy.spatial.distance import cdist
 from ..helpers import check_nan, _format
+from ..distance import match
 
-def recall_matrix(egg, match='exact', distance='euclidean', features=None):
+def recall_matrix(egg, match='exact', distance=None, features=None):
     """
     Computes recall matrix given list of presented and list of recalled words
 
@@ -43,6 +44,9 @@ def recall_matrix(egg, match='exact', distance='euclidean', features=None):
 
     if not isinstance(features, list):
         features = [features]
+
+    if isinstance(distance, str):
+        distance = {feat : distance for feat in features}
 
     if match=='exact':
         features=['item']
@@ -95,11 +99,18 @@ def _similarity_smooth(presented, recalled, features, distance):
         for i, feature in enumerate(features):
             get_feature = lambda x: np.array(x[feature]) if np.array(pd.notna(x['item'])).any() else np.nan
             p = np.vstack(p_list.apply(get_feature).get_values())
-            r = r_list.dropna().apply(get_feature).get_values()
+            try:
+                r = r_list.dropna().apply(get_feature).get_values()
+            except KeyError:
+                r = np.empty(p.shape)*np.nan
             r = np.vstack(list(filter(lambda x: x is not np.nan, r)))
-            tmp = 1 - cdist(r, p, distance)
-            res[li, i, :tmp.shape[0], :] =  tmp
+            dist = distance[feature]
+            if dist == 'match':
+                tmp = match(r, p)
+            else:
+                tmp = 1 - cdist(r, p, dist)
+                res[li, i, :tmp.shape[0], :] =  tmp
     if distance == 'correlation':
         return np.nanmean(res, 1)
     else:
-        return np.mean(res, 1)
+        return np.nanmean(res, 1)

@@ -27,7 +27,6 @@ def list2pd(all_data, subjindex=None, listindex=None):
 
     """
     # set default index if it is not defined
-    # max_nlists = max(map(lambda x: len(x), all_data))
     listindex = [[idx for idx in range(len(sub))] for sub in all_data] if not listindex else listindex
     subjindex = [idx for idx,subj in enumerate(all_data)] if not subjindex else subjindex
 

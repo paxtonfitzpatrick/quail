@@ -1,7 +1,7 @@
 import numpy as np
 from .recmat import recall_matrix
 
-def spc_helper(egg, match='exact', distance='euclidean',
+def spc_helper(egg, match='exact', distance=None,
                features=None):
     """
     Computes probability of a word being recalled (in the appropriate recall list), given its presentation position
