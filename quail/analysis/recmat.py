@@ -110,7 +110,4 @@ def _similarity_smooth(presented, recalled, features, distance):
             else:
                 tmp = 1 - cdist(r, p, dist)
                 res[li, i, :tmp.shape[0], :] =  tmp
-    if distance == 'correlation':
-        return np.nanmean(res, 1)
-    else:
-        return np.nanmean(res, 1)
+    return np.nanmean(res, 1)
