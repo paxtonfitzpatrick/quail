@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import pandas as pd
 from .recmat import recall_matrix
@@ -126,4 +127,8 @@ def lagcrp_helper(egg, match='exact', distance=None,
         lagcrp = np.atleast_2d(np.mean([nlagcrp(r, ts=ts) for r in recmat], 0))
     else:
         raise ValueError('Match must be set to exact, best or smooth.')
-    return np.nanmean(lagcrp, axis=0)
+
+    # suppress RuntimeWarning caused by averaging rows of all NaNs
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=RuntimeWarning)
+        return np.nanmean(lagcrp, axis=0)

@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import pandas as pd
 import six
@@ -112,5 +113,8 @@ def _similarity_smooth(presented, recalled, features, distance):
                 tmp = match(r, p)
             else:
                 tmp = 1 - cdist(r, p, dist)
-                res[li, i, :tmp.shape[0], :] =  tmp
-    return np.nanmean(res, 1)
+                res[li, i, :tmp.shape[0], :] = tmp
+    # suppress RuntimeWarning caused by averaging columns of all NaNs
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=RuntimeWarning)
+        return np.nanmean(res, 1)
