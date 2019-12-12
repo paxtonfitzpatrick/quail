@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from .recmat import recall_matrix
 
@@ -45,7 +46,10 @@ def spc_helper(egg, match='exact', distance=None,
     if match in ['exact', 'best']:
         result = [spc(lst) for lst in recmat]
     elif match == 'smooth':
-        result = np.nanmean(recmat, 2)
+        # suppress RuntimeWarning caused by averaging rows of all NaNs
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', category=RuntimeWarning)
+            result = np.nanmean(recmat, 2)
     else:
         raise ValueError('Match must be set to exact, best or smooth.')
     return np.mean(result, 0)

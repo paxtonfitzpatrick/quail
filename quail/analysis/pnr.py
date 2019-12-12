@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from .recmat import recall_matrix
 
@@ -49,4 +50,8 @@ def pnr_helper(egg, position, match='exact',
         result = np.atleast_2d(recmat[:, :, 0])
     else:
         raise ValueError('Match must be set to exact, best or smooth.')
-    return np.nanmean(result, axis=0)
+
+    # suppress RuntimeWarning caused by averaging rows of all NaNs
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', category=RuntimeWarning)
+        return np.nanmean(result, axis=0)
