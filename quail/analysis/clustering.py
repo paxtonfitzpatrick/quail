@@ -130,8 +130,8 @@ def get_distmat(egg, feature, distdict):
     return cdist(f, f, distdict[egg.dist_funcs[feature]])
 
 def get_match(egg, feature, distdict):
-    p = np.atleast_2d([xi[feature] for xi in egg.get_pres_features().values[0]]).T
-    r = np.atleast_2d([xi[feature] for xi in egg.get_rec_features().values[0]]).T
+    p = np.atleast_2d([xi[feature] for xi in egg.get_pres_features().values[0]])
+    r = np.atleast_2d([xi[feature] for xi in egg.get_rec_features().values[0]])
     return cdist(p, r, distdict[egg.dist_funcs[feature]])
 
 def compute_feature_weights(pres_list, rec_list, feature_list, distances):
